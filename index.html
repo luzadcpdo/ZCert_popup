@@ -169,7 +169,6 @@
     <div class="field"><span class="field-name">CONTROL NO :</span><span class="field-value" id="CONTROL NO">&nbsp;</span></div>
     <div class="field"><span class="field-name">PIN :</span><span class="field-value" id="PIN">&nbsp;</span></div>
     <div class="field"><span class="field-name">NEW PIN :</span><span class="field-value" id="NEW PIN">&nbsp;</span></div>
-    <!--<div class="field"><span class="field-name">APPLICANT NAME :</span><span class="field-value" id="APPLICANT NAME">&nbsp;</span></div>-->
     <div class="field"><span class="field-name">LOT/SURVEY NO :</span><span class="field-value" id="LOT/SURVEY NO">&nbsp;</span></div>
     <div class="field"><span class="field-name">LAND AREA :</span><span class="field-value" id="LAND AREA">&nbsp;</span></div>
     <div class="field"><span class="field-name">BARANGAY :</span><span class="field-value" id="BARANGAYID_F">&nbsp;</span></div>
@@ -207,26 +206,36 @@ function formatLongDate(value) {
   return date.toLocaleDateString('en-US', options);
 }
 
+// ===== FIXED loadData for mobile Chrome =====
 async function loadData() {
   document.getElementById("status").textContent = "Loading data…";
 
   try {
-    const res = await fetch(apiURL);
+    // cache-buster to prevent Chrome mobile from loading stale data
+    const res = await fetch(`${apiURL}?t=${Date.now()}`);
     const rawData = await res.json();
+
+    // Validate response
+    if (!rawData || !rawData.data || rawData.data.length < 2) {
+      throw new Error("Incomplete data received");
+    }
+
     const headers = rawData.data[0];
     sheetData = rawData.data.slice(1).map(row => {
       let obj = {};
       headers.forEach((h, i) => obj[h] = row[i]);
       return obj;
     });
+
     totalRecords = sheetData.length;
     document.getElementById("totalRecordsValue").textContent = totalRecords;
     document.getElementById("sheetName").textContent = rawData.spreadsheetName || "Unknown Sheet";
     document.getElementById("recordsCount").textContent = 0;
     document.getElementById("status").textContent = "Data loaded. You can now search.";
+
   } catch(err) {
     document.getElementById("status").textContent = "Failed to load data.";
-    console.error(err);
+    console.error("Error loading data:", err);
   }
 }
 
@@ -322,10 +331,7 @@ function runSearch(fromTyping = false) {
     validatedMsg.style.color = "green";
     validatedMsg.style.display = "block";
     if (fromTyping) playBeep("success");
-
-    // Auto-hide keyboard ONLY when result is found
     document.getElementById("searchBox").blur();
-
   } else {
     validatedMsg.textContent = "NO RECORD FOUND!";
     validatedMsg.style.color = "red";
@@ -389,12 +395,11 @@ popupTrackInput.addEventListener("keydown", (e) => {
   }
 });
 
-// On page load, fetch data then enable input
+// ===== Mobile-ready page load =====
 window.addEventListener("load", async () => {
   await loadData();
-  // Enable input now that data is loaded
   popupTrackInput.disabled = false;
-  popupTrackInput.focus();
+  setTimeout(() => popupTrackInput.focus(), 200);
 });
 </script>
 
