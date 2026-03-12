@@ -3,7 +3,7 @@
 <head>
   <title>ZCQRScanner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <style>
     body { 
       font-family: Arial, sans-serif; 
@@ -75,14 +75,14 @@
 
     #scanBtn, #uploadBtn { display: none !important; }
 
-    /* ===== POPUP MODAL ===== */
+    /* ================= POPUP MODAL ================= */
     #trackModal{
-      position:fixed;
+      position: fixed;
       top:0;
       left:0;
       width:100%;
       height:100%;
-      background:rgba(0,0,0,0.65);
+      background: rgba(0,0,0,0.65);
       display:flex;
       align-items:center;
       justify-content:center;
@@ -115,82 +115,102 @@
     #trackModalContent button{
       background:#4CAF50;
       padding:8px 16px;
-      color:white;
+      color:#fff;
       border:none;
       border-radius:4px;
       cursor:pointer;
     }
 
+    /* MOBILE RESPONSIVE */
+    @media screen and (max-width: 600px) {
+      #trackModalContent {
+        width: 90%;
+        padding: 15px;
+      }
+      #searchBox, #searchField {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 8px;
+      }
+      #searchBtn, #clearBtn, #darkModeBtn {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+      #fields .field-name {
+        min-width: 120px;
+      }
+      #results table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
   </style>
 </head>
 <body>
 
-<!-- POPUP -->
-<div id="trackModal">
-  <div id="trackModalContent">
-    <label>INPUT TRACKING NUMBER</label>
-    <input type="text" id="popupTrackInput" placeholder="Enter TrackNo" disabled />
-    <button id="popupSearchBtn" disabled>Search</button>
+  <!-- POPUP -->
+  <div id="trackModal">
+    <div id="trackModalContent">
+      <label>INPUT TRACKING NUMBER</label>
+      <input type="text" id="popupTrackInput" placeholder="Enter TrackNo" disabled>
+      <button id="popupSearchBtn">Search</button>
+    </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col">
-    <center>
-    <img src="img/gensanlogo.png" style="height: 75px; width: 75px; float: center;">
-    <img src="img/cpdo-logo.png" style="height: 90px; width: 90px; float: center;">
-    </center>
+  <div class="row">
+    <div class="col text-center">
+      <img src="img/gensanlogo.png" style="height: 75px; width: 75px;">
+      <img src="img/cpdo-logo.png" style="height: 90px; width: 90px;">
+    </div>
   </div>
-</div>
-<hr>
+  <hr>
 
-<div id="topHeader">
-  <div>
-    <div id="developer">Developer: Rodney Belangdal</div>
-    <div id="recordsFound">Records Found: <span id="recordsCount">0</span></div>
+  <div id="topHeader">
+    <div>
+      <div id="developer">Developer: Rodney Belangdal</div>
+      <div id="recordsFound">Records Found: <span id="recordsCount">0</span></div>
+    </div>
+    <div id="sheetInfo">
+      <div id="totalRecords">Total Records: <span id="totalRecordsValue">0</span></div>
+      <div id="sheetName">&nbsp;</div>
+      <div id="status">Loading data…</div>
+    </div>
   </div>
-  <div id="sheetInfo">
-    <div id="totalRecords">Total Records: <span id="totalRecordsValue">0</span></div>
-    <div id="sheetName">&nbsp;</div>
-    <div id="status">Loading data…</div>
+
+  <center><h2>CPDO CERTIFICATION VERIFICATION</h2></center>
+  <div id="validatedMsg"></div>
+
+  <select id="searchField"></select>
+  <input type="text" id="searchBox" placeholder="Search..." disabled/>
+
+  <button id="searchBtn" disabled>Search</button>
+  <button id="clearBtn" disabled>Clear</button>
+  <button id="darkModeBtn">Dark Mode</button>
+
+  <div id="fields">
+    <div class="field"><span class="field-name">DATE RECEIPT :</span><span class="field-value" id="DATE RECEIPT">&nbsp;</span></div>
+    <div class="field"><span class="field-name">RELEASED DATE :</span><span class="field-value" id="RELEASED_D">&nbsp;</span></div>
+    <div class="field"><span class="field-name">CONTROL NO :</span><span class="field-value" id="CONTROL NO">&nbsp;</span></div>
+    <div class="field"><span class="field-name">PIN :</span><span class="field-value" id="PIN">&nbsp;</span></div>
+    <div class="field"><span class="field-name">NEW PIN :</span><span class="field-value" id="NEW PIN">&nbsp;</span></div>
+    <div class="field"><span class="field-name">LOT/SURVEY NO :</span><span class="field-value" id="LOT/SURVEY NO">&nbsp;</span></div>
+    <div class="field"><span class="field-name">LAND AREA :</span><span class="field-value" id="LAND AREA">&nbsp;</span></div>
+    <div class="field"><span class="field-name">BARANGAY :</span><span class="field-value" id="BARANGAYID_F">&nbsp;</span></div>
+    <div class="field"><span class="field-name">ZONE CLASS :</span><span class="field-value" id="CLASSIFICATIONID_F">&nbsp;</span></div>
+    <div class="field"><span class="field-name">PLUSCODE :</span><span class="field-value" id="PLUSCODES">&nbsp;</span></div>
+    <div class="field"><span class="field-name">OR NO :</span><span class="field-value" id="OR NO">&nbsp;</span></div>
+    <div class="field"><span class="field-name">OR DATE :</span><span class="field-value" id="OR DATE">&nbsp;</span></div>
+    <div class="field"><span class="field-name">REMARKS :</span><span class="field-value" id="REMARKS">&nbsp;</span></div>
   </div>
-</div>
 
-<center><h2>CPDO CERTIFICATION VERIFICATION</h2></center>
-
-<div id="validatedMsg"></div>
-
-<select id="searchField"></select>
-<input type="text" id="searchBox" placeholder="Search..." />
-
-<button id="searchBtn">Search</button>
-<button id="clearBtn">Clear</button>
-<button id="darkModeBtn">Dark Mode</button>
-
-<div id="fields">
-  <div class="field"><span class="field-name">DATE RECEIPT :</span><span class="field-value" id="DATE RECEIPT">&nbsp;</span></div>
-  <div class="field"><span class="field-name">RELEASED DATE :</span><span class="field-value" id="RELEASED_D">&nbsp;</span></div>
-  <div class="field"><span class="field-name">CONTROL NO :</span><span class="field-value" id="CONTROL NO">&nbsp;</span></div>
-  <div class="field"><span class="field-name">PIN :</span><span class="field-value" id="PIN">&nbsp;</span></div>
-  <div class="field"><span class="field-name">NEW PIN :</span><span class="field-value" id="NEW PIN">&nbsp;</span></div>
-  <div class="field"><span class="field-name">LOT/SURVEY NO :</span><span class="field-value" id="LOT/SURVEY NO">&nbsp;</span></div>
-  <div class="field"><span class="field-name">LAND AREA :</span><span class="field-value" id="LAND AREA">&nbsp;</span></div>
-  <div class="field"><span class="field-name">BARANGAY :</span><span class="field-value" id="BARANGAYID_F">&nbsp;</span></div>
-  <div class="field"><span class="field-name">ZONE CLASS :</span><span class="field-value" id="CLASSIFICATIONID_F">&nbsp;</span></div>
-  <div class="field"><span class="field-name">PLUSCODE :</span><span class="field-value" id="PLUSCODES">&nbsp;</span></div>
-  <div class="field"><span class="field-name">OR NO :</span><span class="field-value" id="OR NO">&nbsp;</span></div>
-  <div class="field"><span class="field-name">OR DATE :</span><span class="field-value" id="OR DATE">&nbsp;</span></div>
-  <div class="field"><span class="field-name">REMARKS :</span><span class="field-value" id="REMARKS">&nbsp;</span></div>
-</div>
-
-<div id="counter"></div>
-<div id="results"></div>
+  <div id="counter"></div>
+  <div id="results"></div>
 
 <script>
 const apiURL = "https://script.google.com/macros/s/AKfycbzl2hyJ6R807HCLGRZXPgniqPhuHpxJpSIEzy3cXE-W9Otnr6RUGh5L9TxB7OMgns3i/exec";
 let sheetData = [];
 let totalRecords = 0;
-
 const FIELDS_TO_SHOW = [ "DATE RECEIPT", "RELEASED_D", "CONTROL NO", "PIN", "NEW PIN", "APPLICANT NAME", "LOT/SURVEY NO", "LAND AREA", "BARANGAYID_F", "CLASSIFICATIONID_F", "PLUSCODES", "OR NO", "OR DATE", "REMARKS" ];
 const SEARCHABLE_FIELDS = [ "CONTROL NO", "PIN", "NEW PIN", "APPLICANT NAME", "LOT/SURVEY NO" ];
 
@@ -206,19 +226,11 @@ function formatLongDate(value) {
   if (!value) return "\u00A0";
   const date = new Date(value);
   if (isNaN(date)) return value;
-  const options = { year: 'numeric', month: 'long', day: '2-digit' };
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: '2-digit' });
 }
 
-// ========== POPUP ELEMENTS ==========
-const popupTrackInput = document.getElementById("popupTrackInput");
-const popupSearchBtn = document.getElementById("popupSearchBtn");
-const trackModal = document.getElementById("trackModal");
-
-// ========== LOAD DATA ==========
 async function loadData() {
   document.getElementById("status").textContent = "Loading data…";
-
   try {
     const res = await fetch(apiURL);
     const rawData = await res.json();
@@ -234,67 +246,36 @@ async function loadData() {
     document.getElementById("recordsCount").textContent = 0;
     document.getElementById("status").textContent = "Data loaded. You can now search.";
 
-    // ✅ Enable popup input & button now
-    popupTrackInput.disabled = false;
-    popupSearchBtn.disabled = false;
-    popupTrackInput.focus();
-
+    // Enable inputs now
+    document.getElementById("searchBox").disabled = false;
+    document.getElementById("searchBtn").disabled = false;
+    document.getElementById("clearBtn").disabled = false;
+    document.getElementById("popupTrackInput").disabled = false;
+    document.getElementById("popupTrackInput").focus();
   } catch(err) {
     document.getElementById("status").textContent = "Failed to load data.";
     console.error(err);
   }
 }
 
-// ========== POPUP SEARCH ==========
-popupSearchBtn.addEventListener("click", submitPopupSearch);
-popupTrackInput.addEventListener("keypress", function(e) {
-  if (e.key === "Enter") submitPopupSearch();
-});
-
-function submitPopupSearch() {
-  const value = popupTrackInput.value.trim();
-  if (!value) return;
-
-  if (!sheetData.length) {
-    alert("Data is still loading. Please wait...");
-    return;
-  }
-
-  // Hide modal only after search click
-  trackModal.style.display = "none";
-
-  // Fill main search input & trigger search
-  document.getElementById("searchBox").value = value;
-  runSearch(false);
-}
-
-// ========== MAIN SEARCH FUNCTIONS ==========
+// Fill fields
 function fillFields(row) {
   FIELDS_TO_SHOW.forEach(field => {
     const el = document.getElementById(field);
     if (!el) return;
     let value = row[field] || "\u00A0";
-    if (field === "DATE RECEIPT" || field === "RELEASED_D" || field === "OR DATE") {
-      value = formatLongDate(value);
-    }
+    if (["DATE RECEIPT","RELEASED_D","OR DATE"].includes(field)) value = formatLongDate(value);
     el.textContent = value;
   });
 }
 
-function clearFields() {
-  FIELDS_TO_SHOW.forEach(field => {
-    const el = document.getElementById(field);
-    if (el) el.textContent = "\u00A0";
-  });
-}
-
+// Show results table
 function showResults(data) {
   const resultsDiv = document.getElementById("results");
   const counterDiv = document.getElementById("counter");
   resultsDiv.innerHTML = "";
   counterDiv.textContent = `Showing ${data.length} of ${totalRecords} record(s)`;
   document.getElementById("recordsCount").textContent = data.length;
-
   if (!data.length) return;
 
   const table = document.createElement("table");
@@ -323,84 +304,57 @@ function showResults(data) {
   resultsDiv.appendChild(table);
 }
 
-function clearResults() {
-  document.getElementById("results").innerHTML = "";
-  document.getElementById("counter").textContent = "";
-  document.getElementById("validatedMsg").style.display = "none";
-  document.getElementById("recordsCount").textContent = 0;
+// Popup search
+function submitTracking(){
+  const value = document.getElementById("popupTrackInput").value.trim();
+  if(!value) return;
+  document.getElementById("trackModal").style.display="none";
+  document.getElementById("searchBox").value = value;
+  runSearch(true);
 }
 
-function flashRed() {
-  document.body.style.background = "#ffcccc";
-  setTimeout(() => { document.body.style.background = ""; }, 200);
-}
-
-function runSearch(fromTyping = false) {
-  clearResults();
-  clearFields();
-  if (!sheetData.length) return;
-
+// Search function
+function runSearch(fromTyping=false) {
   const query = document.getElementById("searchBox").value.trim().toLowerCase();
+  if(!query) return;
   const selectedField = document.getElementById("searchField").value;
-  const validatedMsg = document.getElementById("validatedMsg");
-
-  if (!query) {
-    validatedMsg.style.display = "none";
-    return;
-  }
-
-  const filtered = sheetData.filter(row =>
-    row[selectedField] && String(row[selectedField]).trim().toLowerCase() === query
-  );
-
+  const filtered = sheetData.filter(row => row[selectedField] && String(row[selectedField]).trim().toLowerCase()===query);
   showResults(filtered);
-
-  if (filtered.length > 0) {
+  const validatedMsg = document.getElementById("validatedMsg");
+  if(filtered.length>0){
     fillFields(filtered[0]);
     validatedMsg.textContent = "VERIFIED DATA!";
     validatedMsg.style.color = "green";
     validatedMsg.style.display = "block";
-    if (fromTyping) playBeep("success");
     document.getElementById("searchBox").blur();
   } else {
     validatedMsg.textContent = "NO RECORD FOUND!";
     validatedMsg.style.color = "red";
     validatedMsg.style.display = "block";
-    if (fromTyping) { playBeep("error"); flashRed(); }
   }
 }
 
-function clearSearch() {
+// Clear search
+function clearSearch(){
   document.getElementById("searchBox").value = "";
-  clearResults();
-  clearFields();   
+  document.getElementById("results").innerHTML = "";
+  document.getElementById("counter").textContent = "";
+  document.getElementById("validatedMsg").style.display="none";
+  document.getElementById("recordsCount").textContent = 0;
+  FIELDS_TO_SHOW.forEach(field=>{
+    const el=document.getElementById(field);
+    if(el) el.textContent="\u00A0";
+  });
 }
 
-let typingTimer;
-const typingDelay = 1000; 
-document.getElementById("searchBox").addEventListener("input", () => {
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(() => { runSearch(true); }, typingDelay);
-});
+document.getElementById("popupSearchBtn").addEventListener("click",submitTracking);
+document.getElementById("popupTrackInput").addEventListener("keypress", e=>{ if(e.key==="Enter") submitTracking(); });
+document.getElementById("searchBtn").addEventListener("click",()=>runSearch(true));
+document.getElementById("clearBtn").addEventListener("click",clearSearch);
+document.getElementById("darkModeBtn").addEventListener("click",()=>document.body.classList.toggle("dark"));
 
-document.getElementById("searchBtn").addEventListener("click", () => runSearch(true));
-document.getElementById("clearBtn").addEventListener("click", clearSearch);
-document.getElementById("darkModeBtn").addEventListener("click", () => document.body.classList.toggle("dark"));
-
-function playBeep(type="success") {
-  try {
-    if (!window.beepAudioCtx) window.beepAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const ctx = window.beepAudioCtx;
-    const oscillator = ctx.createOscillator();
-    oscillator.type = "square";
-    oscillator.frequency.value = type === "success" ? 1000 : 300; 
-    oscillator.connect(ctx.destination);
-    oscillator.start();
-    oscillator.stop(ctx.currentTime + 0.12);
-  } catch(e) {}
-}
-
-window.addEventListener("load", loadData);
+window.addEventListener("load",loadData);
 </script>
+
 </body>
 </html>
