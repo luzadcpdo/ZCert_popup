@@ -3,7 +3,7 @@
 <head>
   <title>ZCQRScanner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body { 
       font-family: Arial, sans-serif; 
@@ -75,113 +75,116 @@
 
     #scanBtn, #uploadBtn { display: none !important; }
 
-    /* ======= POPUP MODAL STYLE ======= */
-    #trackModal {
-      position: fixed;
-      top:0; left:0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.65);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
+    /* ===== POPUP MODAL ===== */
+    #trackModal{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.65);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
     }
-    #trackModalContent {
-      background: white;
-      padding: 25px;
-      border-radius: 8px;
-      text-align: center;
-      width: 320px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+
+    #trackModalContent{
+      background:white;
+      padding:25px;
+      border-radius:8px;
+      text-align:center;
+      width:320px;
+      box-shadow:0 0 10px rgba(0,0,0,0.3);
     }
-    #trackModalContent label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 10px;
-      font-size: 16px;
+
+    #trackModalContent label{
+      font-weight:bold;
+      display:block;
+      margin-bottom:10px;
+      font-size:16px;
     }
-    #trackModalContent input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 12px;
-      font-size: 14px;
-      box-sizing: border-box;
+
+    #trackModalContent input{
+      width:100%;
+      padding:8px;
+      margin-bottom:12px;
+      font-size:14px;
     }
-    #trackModalContent button {
-      background: #4285F4;
-      padding: 8px 16px;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      font-weight: bold;
+
+    #trackModalContent button{
+      background:#4CAF50;
+      padding:8px 16px;
+      color:white;
+      border:none;
+      border-radius:4px;
+      cursor:pointer;
     }
+
   </style>
 </head>
 <body>
 
-  <!-- POPUP MODAL -->
-  <div id="trackModal">
-    <div id="trackModalContent">
-      <label>INPUT TRACKING NUMBER</label>
-      <input type="text" id="popupTrackInput" placeholder="Enter Search Term" autofocus />
-      <button id="popupSearchBtn">Search</button>
-    </div>
+<!-- POPUP -->
+<div id="trackModal">
+  <div id="trackModalContent">
+    <label>INPUT TRACKING NUMBER</label>
+    <input type="text" id="popupTrackInput" placeholder="Enter TrackNo" disabled />
+    <button id="popupSearchBtn" disabled>Search</button>
   </div>
+</div>
 
-  <div class="row">
-    <div class="col">
-      <center>
-      <img src="img/gensanlogo.png" style="height: 75px; width: 75px; float: center;">
-      <img src="img/cpdo-logo.png" style="height: 90px; width: 90px; float: center;">
-      </center>
-    </div>
+<div class="row">
+  <div class="col">
+    <center>
+    <img src="img/gensanlogo.png" style="height: 75px; width: 75px; float: center;">
+    <img src="img/cpdo-logo.png" style="height: 90px; width: 90px; float: center;">
+    </center>
   </div>
-  <hr>
+</div>
+<hr>
 
-  <div id="topHeader">
-    <div>
-      <div id="developer">Developer: Rodney Belangdal</div>
-      <div id="recordsFound">Records Found: <span id="recordsCount">0</span></div>
-    </div>
-    <div id="sheetInfo">
-      <div id="totalRecords">Total Records: <span id="totalRecordsValue">0</span></div>
-      <div id="sheetName">&nbsp;</div>
-      <div id="status">Loading data…</div>
-    </div>
+<div id="topHeader">
+  <div>
+    <div id="developer">Developer: Rodney Belangdal</div>
+    <div id="recordsFound">Records Found: <span id="recordsCount">0</span></div>
   </div>
-
-  <center><h2>CPDO CERTIFICATION VERIFICATION</h2></center>
-  
-  <div id="validatedMsg"></div>
-
-  <select id="searchField"></select>
-  <input type="text" id="searchBox" placeholder="Search..." />
-
-  <button id="searchBtn">Search</button>
-  <button id="clearBtn">Clear</button>
-  <button id="darkModeBtn">Dark Mode</button>
-
-  <div id="fields">
-    <div class="field"><span class="field-name">DATE RECEIPT :</span><span class="field-value" id="DATE RECEIPT">&nbsp;</span></div>
-    <div class="field"><span class="field-name">RELEASED DATE :</span><span class="field-value" id="RELEASED_D">&nbsp;</span></div>
-    <div class="field"><span class="field-name">CONTROL NO :</span><span class="field-value" id="CONTROL NO">&nbsp;</span></div>
-    <div class="field"><span class="field-name">PIN :</span><span class="field-value" id="PIN">&nbsp;</span></div>
-    <div class="field"><span class="field-name">NEW PIN :</span><span class="field-value" id="NEW PIN">&nbsp;</span></div>
-    <!--<div class="field"><span class="field-name">APPLICANT NAME :</span><span class="field-value" id="APPLICANT NAME">&nbsp;</span></div>-->
-    <div class="field"><span class="field-name">LOT/SURVEY NO :</span><span class="field-value" id="LOT/SURVEY NO">&nbsp;</span></div>
-    <div class="field"><span class="field-name">LAND AREA :</span><span class="field-value" id="LAND AREA">&nbsp;</span></div>
-    <div class="field"><span class="field-name">BARANGAY :</span><span class="field-value" id="BARANGAYID_F">&nbsp;</span></div>
-    <div class="field"><span class="field-name">ZONE CLASS :</span><span class="field-value" id="CLASSIFICATIONID_F">&nbsp;</span></div>
-    <div class="field"><span class="field-name">PLUSCODE :</span><span class="field-value" id="PLUSCODES">&nbsp;</span></div>
-    <div class="field"><span class="field-name">OR NO :</span><span class="field-value" id="OR NO">&nbsp;</span></div>
-    <div class="field"><span class="field-name">OR DATE :</span><span class="field-value" id="OR DATE">&nbsp;</span></div>
-    <div class="field"><span class="field-name">REMARKS :</span><span class="field-value" id="REMARKS">&nbsp;</span></div>
+  <div id="sheetInfo">
+    <div id="totalRecords">Total Records: <span id="totalRecordsValue">0</span></div>
+    <div id="sheetName">&nbsp;</div>
+    <div id="status">Loading data…</div>
   </div>
+</div>
 
-  <div id="counter"></div>
-  <div id="results"></div>
+<center><h2>CPDO CERTIFICATION VERIFICATION</h2></center>
+
+<div id="validatedMsg"></div>
+
+<select id="searchField"></select>
+<input type="text" id="searchBox" placeholder="Search..." />
+
+<button id="searchBtn">Search</button>
+<button id="clearBtn">Clear</button>
+<button id="darkModeBtn">Dark Mode</button>
+
+<div id="fields">
+  <div class="field"><span class="field-name">DATE RECEIPT :</span><span class="field-value" id="DATE RECEIPT">&nbsp;</span></div>
+  <div class="field"><span class="field-name">RELEASED DATE :</span><span class="field-value" id="RELEASED_D">&nbsp;</span></div>
+  <div class="field"><span class="field-name">CONTROL NO :</span><span class="field-value" id="CONTROL NO">&nbsp;</span></div>
+  <div class="field"><span class="field-name">PIN :</span><span class="field-value" id="PIN">&nbsp;</span></div>
+  <div class="field"><span class="field-name">NEW PIN :</span><span class="field-value" id="NEW PIN">&nbsp;</span></div>
+  <div class="field"><span class="field-name">LOT/SURVEY NO :</span><span class="field-value" id="LOT/SURVEY NO">&nbsp;</span></div>
+  <div class="field"><span class="field-name">LAND AREA :</span><span class="field-value" id="LAND AREA">&nbsp;</span></div>
+  <div class="field"><span class="field-name">BARANGAY :</span><span class="field-value" id="BARANGAYID_F">&nbsp;</span></div>
+  <div class="field"><span class="field-name">ZONE CLASS :</span><span class="field-value" id="CLASSIFICATIONID_F">&nbsp;</span></div>
+  <div class="field"><span class="field-name">PLUSCODE :</span><span class="field-value" id="PLUSCODES">&nbsp;</span></div>
+  <div class="field"><span class="field-name">OR NO :</span><span class="field-value" id="OR NO">&nbsp;</span></div>
+  <div class="field"><span class="field-name">OR DATE :</span><span class="field-value" id="OR DATE">&nbsp;</span></div>
+  <div class="field"><span class="field-name">REMARKS :</span><span class="field-value" id="REMARKS">&nbsp;</span></div>
+</div>
+
+<div id="counter"></div>
+<div id="results"></div>
 
 <script>
 const apiURL = "https://script.google.com/macros/s/AKfycbzl2hyJ6R807HCLGRZXPgniqPhuHpxJpSIEzy3cXE-W9Otnr6RUGh5L9TxB7OMgns3i/exec";
@@ -207,6 +210,12 @@ function formatLongDate(value) {
   return date.toLocaleDateString('en-US', options);
 }
 
+// ========== POPUP ELEMENTS ==========
+const popupTrackInput = document.getElementById("popupTrackInput");
+const popupSearchBtn = document.getElementById("popupSearchBtn");
+const trackModal = document.getElementById("trackModal");
+
+// ========== LOAD DATA ==========
 async function loadData() {
   document.getElementById("status").textContent = "Loading data…";
 
@@ -224,12 +233,42 @@ async function loadData() {
     document.getElementById("sheetName").textContent = rawData.spreadsheetName || "Unknown Sheet";
     document.getElementById("recordsCount").textContent = 0;
     document.getElementById("status").textContent = "Data loaded. You can now search.";
+
+    // ✅ Enable popup input & button now
+    popupTrackInput.disabled = false;
+    popupSearchBtn.disabled = false;
+    popupTrackInput.focus();
+
   } catch(err) {
     document.getElementById("status").textContent = "Failed to load data.";
     console.error(err);
   }
 }
 
+// ========== POPUP SEARCH ==========
+popupSearchBtn.addEventListener("click", submitPopupSearch);
+popupTrackInput.addEventListener("keypress", function(e) {
+  if (e.key === "Enter") submitPopupSearch();
+});
+
+function submitPopupSearch() {
+  const value = popupTrackInput.value.trim();
+  if (!value) return;
+
+  if (!sheetData.length) {
+    alert("Data is still loading. Please wait...");
+    return;
+  }
+
+  // Hide modal only after search click
+  trackModal.style.display = "none";
+
+  // Fill main search input & trigger search
+  document.getElementById("searchBox").value = value;
+  runSearch(false);
+}
+
+// ========== MAIN SEARCH FUNCTIONS ==========
 function fillFields(row) {
   FIELDS_TO_SHOW.forEach(field => {
     const el = document.getElementById(field);
@@ -322,10 +361,7 @@ function runSearch(fromTyping = false) {
     validatedMsg.style.color = "green";
     validatedMsg.style.display = "block";
     if (fromTyping) playBeep("success");
-
-    // Auto-hide keyboard ONLY when result is found
     document.getElementById("searchBox").blur();
-
   } else {
     validatedMsg.textContent = "NO RECORD FOUND!";
     validatedMsg.style.color = "red";
@@ -364,44 +400,7 @@ function playBeep(type="success") {
   } catch(e) {}
 }
 
-// New popup modal handlers
-
-const trackModal = document.getElementById("trackModal");
-const popupTrackInput = document.getElementById("popupTrackInput");
-const popupSearchBtn = document.getElementById("popupSearchBtn");
-
-function submitPopupSearch() {
-  const val = popupTrackInput.value.trim();
-  if (!val) {
-    alert("Please enter a tracking number.");
-    popupTrackInput.focus();
-    return;
-  }
-  // Sync the popup input to main search box
-  document.getElementById("searchBox").value = val;
-  // Hide popup
-  trackModal.style.display = "none";
-  // Run search
-  runSearch(false);
-}
-
-popupSearchBtn.addEventListener("click", submitPopupSearch);
-
-popupTrackInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    submitPopupSearch();
-  }
-});
-
-// On page load, fetch data then show modal and focus input
-window.addEventListener("load", async () => {
-  await loadData();
-  // Show modal
-  trackModal.style.display = "flex";
-  popupTrackInput.focus();
-});
-
+window.addEventListener("load", loadData);
 </script>
-
 </body>
 </html>
