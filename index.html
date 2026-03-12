@@ -27,15 +27,7 @@
     #totalRecords { font-weight: normal; }
     #totalRecordsValue { font-weight: bold; }
 
-    /* ==== FIX: keep the three lines under Total Records inline and aligned ==== */
-    #sheetInfo { 
-      text-align: right; 
-      font-size: 14px; 
-      color: #555; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: flex-start; 
-    }
+    #sheetInfo { text-align: right; font-size: 14px; color: #555; }
     body.dark #sheetInfo { color: #bbb; }
 
     #sheetInfo #status { margin-top: 4px; font-weight: bold; color: green; }
@@ -231,7 +223,7 @@ async function loadData() {
     document.getElementById("totalRecordsValue").textContent = totalRecords;
     document.getElementById("sheetName").textContent = rawData.spreadsheetName || "Unknown Sheet";
     document.getElementById("recordsCount").textContent = 0;
-    document.getElementById("status").textContent = "Data loaded. You can now search.";
+    document.getElementById("status").textContent = "All Data loaded";
   } catch(err) {
     document.getElementById("status").textContent = "Failed to load data.";
     console.error(err);
@@ -385,8 +377,7 @@ function submitPopupSearch() {
     return;
   }
   document.getElementById("searchBox").value = val;
-
-    trackModal.style.display = "none";
+  trackModal.style.display = "none";
   runSearch(false);
 }
 
