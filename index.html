@@ -125,7 +125,7 @@
   <div id="trackModal">
     <div id="trackModalContent">
       <label>INPUT TRACKING NUMBER</label>
-      <input type="text" id="popupTrackInput" placeholder="Enter Search Term" autofocus />
+      <input type="text" id="popupTrackInput" placeholder="Enter Search Term" autofocus disabled />
       <button id="popupSearchBtn">Search</button>
     </div>
   </div>
@@ -365,7 +365,6 @@ function playBeep(type="success") {
 }
 
 // New popup modal handlers
-
 const trackModal = document.getElementById("trackModal");
 const popupTrackInput = document.getElementById("popupTrackInput");
 const popupSearchBtn = document.getElementById("popupSearchBtn");
@@ -377,11 +376,8 @@ function submitPopupSearch() {
     popupTrackInput.focus();
     return;
   }
-  // Sync the popup input to main search box
   document.getElementById("searchBox").value = val;
-  // Hide popup
   trackModal.style.display = "none";
-  // Run search
   runSearch(false);
 }
 
@@ -393,14 +389,13 @@ popupTrackInput.addEventListener("keydown", (e) => {
   }
 });
 
-// On page load, fetch data then show modal and focus input
+// On page load, fetch data then enable input
 window.addEventListener("load", async () => {
   await loadData();
-  // Show modal
-  trackModal.style.display = "flex";
+  // Enable input now that data is loaded
+  popupTrackInput.disabled = false;
   popupTrackInput.focus();
 });
-
 </script>
 
 </body>
