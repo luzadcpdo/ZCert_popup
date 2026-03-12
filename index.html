@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ZCQRScanner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      max-width: 1000px; 
+      margin: 40px auto; 
+      position: relative;
+      background: #ffffff;
+      color: #000000;
+      transition: background 0.3s, color 0.3s;
+      padding: 10px;
+    }
+    body.dark { background: #121212; color: #f1f1f1; }
+
+    #topHeader { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; }
+    #developer { font-size: 14px; color: #555; }
+    body.dark #developer { color: #ccc; }
+
+    #recordsFound { font-size: 14px; margin-top: 2px; }
+    #recordsFound span { font-weight: bold; color: blue; }
+
+    #totalRecords { font-weight: normal; }
+    #totalRecordsValue { font-weight: bold; }
+
+    #sheetInfo { text-align: right; font-size: 14px; color: #555; }
+    body.dark #sheetInfo { color: #bbb; }
+
+    #sheetInfo #status { margin-top: 4px; font-weight: bold; color: green; }
+    body.dark #sheetInfo #status { color: #80e080; }
+
+    #searchBox { padding: 8px; width: 50%; margin-right: 10px; margin-bottom:10px; min-width: 120px; }
+    #searchField { padding: 8px; width: 180px; margin-right: 10px; margin-bottom:10px; min-width: 120px; }
+    #searchBtn, #clearBtn, #darkModeBtn { 
+      padding: 9px 15px; border: none; color: white; cursor: pointer; margin-bottom:10px; border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+      position: relative;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #searchBtn { background: #4285F4; margin-right: 5px; }
+    #searchBtn:hover { background: #357AE8; }
+    #clearBtn { background: #f44336; margin-right: 5px; }
+    #clearBtn:hover { background: #d32f2f; }
+    #darkModeBtn { background: #333; margin-left: 5px; }
+    body.dark #darkModeBtn { background: #666; color: #fff; }
+
+    #validatedMsg { font-weight: bold; display: none; font-size: 22px; margin-top: 10px; text-align: center; }
+
+    #fields { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px; border: 1px solid #ddd; }
+    body.dark #fields { background: #1e1e1e; border-color: #444; }
+    .field { display: flex; margin-bottom: 6px; flex-wrap: wrap; }
+    .field-name { font-weight: bold; min-width: 200px; color: #333; white-space: nowrap; }
+    body.dark .field-name { color: #ddd; }
+    .field-value { flex: 1; color: #555; word-wrap: break-word; }
+    body.dark .field-value { color: #ccc; }
+
+    #counter { margin-top: 10px; font-weight: bold; color: #444; }
+    body.dark #counter { color: #ccc; }
+
+    #results { margin-top: 10px; border-collapse: collapse; width: 100%; overflow-x:auto; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; vertical-align: top; word-wrap: break-word; }
+    th { background-color: #4285F4; color: white; font-weight: bold; text-align: left; }
+    tr:hover { background-color: #e8f0fe; cursor: pointer; }
+    body.dark th { background-color: #333; border-color: #555; }
+    body.dark td { border-color: #555; }
+    body.dark tr:hover { background-color: #444; }
+
+    #scanBtn, #uploadBtn { display: none !important; }
+
+    /* ======= POPUP MODAL STYLE ======= */
+    #trackModal {
+      position: fixed;
+      top:0; left:0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #trackModalContent {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      text-align: center;
+      width: 320px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    #trackModalContent label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    #trackModalContent input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    #trackModalContent button {
+      background: #4285F4;
+      padding: 8px 16px;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- POPUP MODAL -->
+  <div id="trackModal">
+    <div id="trackModalContent">
+      <label>INPUT TRACKING NUMBER</label>
+      <input type="text" id="popupTrackInput" placeholder="Enter Search Term" autofocus />
+      <button id="popupSearchBtn">Search</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <center>
+      <img src="img/gensanlogo.png" style="height: 75px; width: 75px; float: center;">
+      <img src="img/cpdo-logo.png" style="height: 90px; width: 90px; float: center;">
+      </center>
+    </div>
+  </div>
+  <hr>
+
+  <div id="topHeader">
+    <div>
+      <div id="developer">Developer: Rodney Belangdal</div>
+      <div id="recordsFound">Records Found: <span id="recordsCount">0</span></div>
+    </div>
+    <div id="sheetInfo">
+      <div id="totalRecords">Total Records: <span id="totalRecordsValue">0</span></div>
+      <div id="sheetName">&nbsp;</div>
+      <div id="status">Loading data…</div>
+    </div>
+  </div>
+
+  <center><h2>CPDO CERTIFICATION VERIFICATION</h2></center>
+  
+  <div id="validatedMsg"></div>
+
+  <select id="searchField"></select>
+  <input type="text" id="searchBox" placeholder="Search..." />
+
+  <button id="searchBtn">Search</button>
+  <button id="clearBtn">Clear</button>
+  <button id="darkModeBtn">Dark Mode</button>
+
+  <div id="fields">
+    <div class="field"><span class="field-name">DATE RECEIPT :</span><span class="field-value" id="DATE RECEIPT">&nbsp;</span></div>
+    <div class="field"><span class="field-name">RELEASED DATE :</span><span class="field-value" id="RELEASED_D">&nbsp;</span></div>
+    <div class="field"><span class="field-name">CONTROL NO :</span><span class="field-value" id="CONTROL NO">&nbsp;</span></div>
+    <div class="field"><span class="field-name">PIN :</span><span class="field-value" id="PIN">&nbsp;</span></div>
+    <div class="field"><span class="field-name">NEW PIN :</span><span class="field-value" id="NEW PIN">&nbsp;</span></div>
+    <!--<div class="field"><span class="field-name">APPLICANT NAME :</span><span class="field-value" id="APPLICANT NAME">&nbsp;</span></div>-->
+    <div class="field"><span class="field-name">LOT/SURVEY NO :</span><span class="field-value" id="LOT/SURVEY NO">&nbsp;</span></div>
+    <div class="field"><span class="field-name">LAND AREA :</span><span class="field-value" id="LAND AREA">&nbsp;</span></div>
+    <div class="field"><span class="field-name">BARANGAY :</span><span class="field-value" id="BARANGAYID_F">&nbsp;</span></div>
+    <div class="field"><span class="field-name">ZONE CLASS :</span><span class="field-value" id="CLASSIFICATIONID_F">&nbsp;</span></div>
+    <div class="field"><span class="field-name">PLUSCODE :</span><span class="field-value" id="PLUSCODES">&nbsp;</span></div>
+    <div class="field"><span class="field-name">OR NO :</span><span class="field-value" id="OR NO">&nbsp;</span></div>
+    <div class="field"><span class="field-name">OR DATE :</span><span class="field-value" id="OR DATE">&nbsp;</span></div>
+    <div class="field"><span class="field-name">REMARKS :</span><span class="field-value" id="REMARKS">&nbsp;</span></div>
+  </div>
+
+  <div id="counter"></div>
+  <div id="results"></div>
+
+<script>
+const apiURL = "https://script.google.com/macros/s/AKfycbzl2hyJ6R807HCLGRZXPgniqPhuHpxJpSIEzy3cXE-W9Otnr6RUGh5L9TxB7OMgns3i/exec";
+let sheetData = [];
+let totalRecords = 0;
+
+const FIELDS_TO_SHOW = [ "DATE RECEIPT", "RELEASED_D", "CONTROL NO", "PIN", "NEW PIN", "APPLICANT NAME", "LOT/SURVEY NO", "LAND AREA", "BARANGAYID_F", "CLASSIFICATIONID_F", "PLUSCODES", "OR NO", "OR DATE", "REMARKS" ];
+const SEARCHABLE_FIELDS = [ "CONTROL NO", "PIN", "NEW PIN", "APPLICANT NAME", "LOT/SURVEY NO" ];
+
+const dropdown = document.getElementById("searchField");
+SEARCHABLE_FIELDS.forEach(field => {
+  const option = document.createElement("option");
+  option.value = field;
+  option.textContent = field;
+  dropdown.appendChild(option);
+});
+
+function formatLongDate(value) {
+  if (!value) return "\u00A0";
+  const date = new Date(value);
+  if (isNaN(date)) return value;
+  const options = { year: 'numeric', month: 'long', day: '2-digit' };
+  return date.toLocaleDateString('en-US', options);
+}
+
+async function loadData() {
+  document.getElementById("status").textContent = "Loading data…";
+
+  try {
+    const res = await fetch(apiURL);
+    const rawData = await res.json();
+    const headers = rawData.data[0];
+    sheetData = rawData.data.slice(1).map(row => {
+      let obj = {};
+      headers.forEach((h, i) => obj[h] = row[i]);
+      return obj;
+    });
+    totalRecords = sheetData.length;
+    document.getElementById("totalRecordsValue").textContent = totalRecords;
+    document.getElementById("sheetName").textContent = rawData.spreadsheetName || "Unknown Sheet";
+    document.getElementById("recordsCount").textContent = 0;
+    document.getElementById("status").textContent = "Data loaded. You can now search.";
+  } catch(err) {
+    document.getElementById("status").textContent = "Failed to load data.";
+    console.error(err);
+  }
+}
+
+function fillFields(row) {
+  FIELDS_TO_SHOW.forEach(field => {
+    const el = document.getElementById(field);
+    if (!el) return;
+    let value = row[field] || "\u00A0";
+    if (field === "DATE RECEIPT" || field === "RELEASED_D" || field === "OR DATE") {
+      value = formatLongDate(value);
+    }
+    el.textContent = value;
+  });
+}
+
+function clearFields() {
+  FIELDS_TO_SHOW.forEach(field => {
+    const el = document.getElementById(field);
+    if (el) el.textContent = "\u00A0";
+  });
+}
+
+function showResults(data) {
+  const resultsDiv = document.getElementById("results");
+  const counterDiv = document.getElementById("counter");
+  resultsDiv.innerHTML = "";
+  counterDiv.textContent = `Showing ${data.length} of ${totalRecords} record(s)`;
+  document.getElementById("recordsCount").textContent = data.length;
+
+  if (!data.length) return;
+
+  const table = document.createElement("table");
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  ["CTRL NO", "APPLICANT", "LOT/SURVEY NO", "ZONE CLASS", "BARANGAY"].forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+    ["CONTROL NO", "APPLICANT NAME", "LOT/SURVEY NO", "CLASSIFICATIONID_F", "BARANGAYID_F"].forEach(col => {
+      const td = document.createElement("td");
+      td.textContent = row[col] || "";
+      tr.appendChild(td);
+    });
+    tr.addEventListener("click", () => fillFields(row));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  resultsDiv.appendChild(table);
+}
+
+function clearResults() {
+  document.getElementById("results").innerHTML = "";
+  document.getElementById("counter").textContent = "";
+  document.getElementById("validatedMsg").style.display = "none";
+  document.getElementById("recordsCount").textContent = 0;
+}
+
+function flashRed() {
+  document.body.style.background = "#ffcccc";
+  setTimeout(() => { document.body.style.background = ""; }, 200);
+}
+
+function runSearch(fromTyping = false) {
+  clearResults();
+  clearFields();
+  if (!sheetData.length) return;
+
+  const query = document.getElementById("searchBox").value.trim().toLowerCase();
+  const selectedField = document.getElementById("searchField").value;
+  const validatedMsg = document.getElementById("validatedMsg");
+
+  if (!query) {
+    validatedMsg.style.display = "none";
+    return;
+  }
+
+  const filtered = sheetData.filter(row =>
+    row[selectedField] && String(row[selectedField]).trim().toLowerCase() === query
+  );
+
+  showResults(filtered);
+
+  if (filtered.length > 0) {
+    fillFields(filtered[0]);
+    validatedMsg.textContent = "VERIFIED DATA!";
+    validatedMsg.style.color = "green";
+    validatedMsg.style.display = "block";
+    if (fromTyping) playBeep("success");
+
+    // Auto-hide keyboard ONLY when result is found
+    document.getElementById("searchBox").blur();
+
+  } else {
+    validatedMsg.textContent = "NO RECORD FOUND!";
+    validatedMsg.style.color = "red";
+    validatedMsg.style.display = "block";
+    if (fromTyping) { playBeep("error"); flashRed(); }
+  }
+}
+
+function clearSearch() {
+  document.getElementById("searchBox").value = "";
+  clearResults();
+  clearFields();   
+}
+
+let typingTimer;
+const typingDelay = 1000; 
+document.getElementById("searchBox").addEventListener("input", () => {
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(() => { runSearch(true); }, typingDelay);
+});
+
+document.getElementById("searchBtn").addEventListener("click", () => runSearch(true));
+document.getElementById("clearBtn").addEventListener("click", clearSearch);
+document.getElementById("darkModeBtn").addEventListener("click", () => document.body.classList.toggle("dark"));
+
+function playBeep(type="success") {
+  try {
+    if (!window.beepAudioCtx) window.beepAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = window.beepAudioCtx;
+    const oscillator = ctx.createOscillator();
+    oscillator.type = "square";
+    oscillator.frequency.value = type === "success" ? 1000 : 300; 
+    oscillator.connect(ctx.destination);
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.12);
+  } catch(e) {}
+}
+
+// New popup modal handlers
+
+const trackModal = document.getElementById("trackModal");
+const popupTrackInput = document.getElementById("popupTrackInput");
+const popupSearchBtn = document.getElementById("popupSearchBtn");
+
+function submitPopupSearch() {
+  const val = popupTrackInput.value.trim();
+  if (!val) {
+    alert("Please enter a tracking number.");
+    popupTrackInput.focus();
+    return;
+  }
+  // Sync the popup input to main search box
+  document.getElementById("searchBox").value = val;
+  // Hide popup
+  trackModal.style.display = "none";
+  // Run search
+  runSearch(false);
+}
+
+popupSearchBtn.addEventListener("click", submitPopupSearch);
+
+popupTrackInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    submitPopupSearch();
+  }
+});
+
+// On page load, fetch data then show modal and focus input
+window.addEventListener("load", async () => {
+  await loadData();
+  // Show modal
+  trackModal.style.display = "flex";
+  popupTrackInput.focus();
+});
+
+</script>
+
+</body>
+</html>
